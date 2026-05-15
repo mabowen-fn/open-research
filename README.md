@@ -47,9 +47,8 @@ openclaw-survey-generator/
 
 1. **Clone the repository:**
 ```bash
-git clone [https://github.com/yourusername/openclaw-survey-generator.git](https://github.com/yourusername/openclaw-survey-generator.git)
-cd openclaw-survey-generator
-
+git clone https://github.com/mabowen-fn/open-research.git(https://github.com/mabowen-fn/open-research.git)
+cd open-research
 ```
 
 
