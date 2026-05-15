@@ -1,5 +1,3 @@
-### `README.md`
-
 # OpenClaw Survey Generator 🤖📄
 
 An automated, containerized pipeline to search, fetch, synthesize, and polish academic literature review papers using LLMs. Built with reproducibility in mind, this project wraps an end-to-end research workflow into a single command-line execution environment powered by Docker.
