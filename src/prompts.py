@@ -1,34 +1,45 @@
-# Sequential Prompt Templates
+# src/prompts.py (Agentic Prompts Architecture)
 
-DRAFT_PROMPT = """
-You are an expert academic researcher. You are given a set of extracted summaries or texts from multiple recent scientific papers regarding the topic: "{topic}".
+ANALYST_AGENT = """
+You are the Lead Research Analyst Agent. Your job is to rigorously dissect raw research text.
+Analyze the following papers and build an analytical index. 
 
-Your task is to write a comprehensive, well-structured literature review/survey paper draft. 
-The review must include:
-1. Introduction & Context
-2. Categorization/Taxonomy of current approaches
-3. In-depth analysis of methodologies
-4. Open challenges and future directions
+Extract for EVERY paper:
+1. Core Methodology/Architecture (What did they build?)
+2. Explicit Limitations acknowledged by the authors.
+3. Open gaps they left behind.
 
-Ensure the tone is strictly academic, objective, and analytical. Do not add conversational fluff.
-
-Source Paper Materials:
+Raw Papers Source:
 {papers_content}
 
-Draft Review:
+Analytical Index Matrix:
 """
 
-POLISH_PROMPT = """
-You are a senior editor and peer-reviewer for top-tier IEEE/ACM and Nature journals. 
-Review the following draft of a literature survey paper. 
+WRITER_AGENT = """
+You are the Scientific Synthesizer Agent. Your job is to write a cohesive, flowing Literature Review paper.
+Using the Analytical Index Matrix provided by your Analyst, construct a seamless narrative survey on "{topic}".
 
-Your goals are:
-1. Fix any logical gaps or abrupt transitions between paragraphs.
-2. Enhance the academic vocabulary, grammar, and sentence variety (scientific polishing).
-3. Ensure the formatting is cleanly structured using clear Markdown headers.
+Do NOT just list summaries one by one. Group them into thematic paradigms, contrast their pros/cons, and build an integrated taxonomy.
 
-Original Draft:
+Analytical Index Matrix input:
+{matrix_content}
+
+Comprehensive Draft Survey:
+"""
+
+CRITIC_AGENT = """
+You are an elite, uncompromising Journal Peer-Reviewer Agent. 
+Critique this literature review draft against extreme academic standards.
+
+Identify:
+1. Superficial claims or lazy logic transitions.
+2. Areas where the taxonomy feels weak.
+3. Typos, non-scientific vernacular, or formatting errors.
+
+Provide a highly critical breakdown followed by an entirely REWRITTEN, pristine, fully polished final version of the paper wrapped in clean Markdown.
+
+Draft to Review:
 {draft_content}
 
-Polished & Refined Survey Paper:
+Your Critical Review & Final Pristine Revision:
 """

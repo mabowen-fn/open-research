@@ -10,8 +10,16 @@ An automated, containerized pipeline to search, fetch, synthesize, and polish ac
 
 * 🐳 **100% Dockerized**: Zero-dependency local setup. Run the entire pipeline via isolated containers.
 * 🔍 **Automated Arxiv Fetcher**: Dynamically queries Arxiv API based on your custom keywords and downloads relevant PDFs/meta-data.
-* 🤖 **Sequential Prompt Pipeline**: Consolidates raw literature, abstracts key insights, structures an academic taxonomy, and outputs a coherent draft survey.
 * ✨ **Automated Peer-Review Polishing**: Passively self-corrects structural logic, eliminates colloquial language, and refines scientific prose to meet top-tier journal standards (IEEE/ACM style).
+
+## ⚡ Advanced Multi-Agent Engine Architecture
+
+Unlike basic prompt wrappers, this repository deploys a containerized **Multi-Agent Consensus System** that parses actual binaries:
+
+1. **PDF Extracting Layer**: Uses structural binary parsers (`pypdf`) to systematically extract section matrix windows (Abstracts, Intros, Results) while keeping token limits fully optimized.
+2. **Analyst Agent 🕵️‍♂️**: Converts arbitrary paper text into rigorous semantic indexes tracking individual methodologies, limitations, and missing elements.
+3. **Synthesis Agent ✍️**: Ingests structural data frames to forge integrated taxonomies instead of linear paper-by-paper summaries.
+4. **Critic Agent 🔬**: Mimics international journal peer-review panels, automatically debugging logic discrepancies, syntax structures, and delivering the finalized publication-ready Markdown file.
 
 ---
 
@@ -53,12 +61,6 @@ cd open-research
 
 
 2. **Configure your environment:**
-Copy the template configuration file and add your credentials:
-```bash
-cp config.example.yaml config.yaml
-
-```
-
 
 Open `config.yaml` and edit the parameters:
 ```yaml

@@ -2,6 +2,7 @@ import os
 import yaml
 from openai import OpenAI  # Standard client, compatible with OpenClaw/OpenAI
 from prompts import DRAFT_PROMPT, POLISH_PROMPT
+from pypdf import PdfReader
 
 
 def load_config():
@@ -31,56 +32,95 @@ def read_local_papers(download_dir):
     return combined_content
 
 
-def run_pipeline():
-    config = load_config()
+def run_agentic_pipeline():
+    with open("config.yaml", "r") as f:
+        config = yaml.safe_load(f)
 
-    # Initialize Client
     client = OpenAI(
         api_key=config["openai_api_key"], base_url=config["openai_api_base"]
     )
 
-    # 1. Gather Content
-    papers_content = read_local_papers(config["download_dir"])
+    # 1. Real PDF ingestion
+    raw_material = extract_text_from_pdfs(config["download_dir"])
 
-    # 2. Step 3: Generate Initial Survey Draft
-    print("🤖 Step 3: Generating initial literature survey draft...")
-    draft_response = client.chat.completions.create(
+    # Agent Step 1: Analytical Dissection
+    print("\n🕵️‍♂️ [Agent 1/3] Analyst Agent is dissecting papers...")
+    matrix_res = client.chat.completions.create(
         model=config["model_name"],
-        messages=[
-            {
-                "role": "user",
-                "content": DRAFT_PROMPT.format(
-                    topic=config["search_query"], papers_content=papers_content
-                ),
-            }
-        ],
-        temperature=0.3,
+        messages=[{"role": "user", "content": ANALYST_AGENT.format(papers_content=raw_material)}],
+        temperature=0.1,
     )
-    draft_text = draft_response.choices[0].message.content
+    matrix_content = matrix_res.choices[0].message.content
 
-    # 3. Step 4: Polish and Refine
-    print("✨ Step 4: Polishing language and validating logic...")
-    polished_response = client.chat.completions.create(
+    # Agent Step 2: Synthesis & Structure
+    print("✍️ [Agent 2/3] Writer Agent is constructing the narrative...")
+    draft_res = client.chat.completions.create(
         model=config["model_name"],
-        messages=[
-            {
-                "role": "user",
-                "content": POLISH_PROMPT.format(draft_content=draft_text),
-            }
-        ],
+        messages=[{"role": "user", "content": WRITER_AGENT.format(topic=config["search_query"], matrix_content=matrix_content)}],
+        temperature=0.4,
+    )
+    draft_content = draft_res.choices[0].message.content
+
+    # Agent Step 3: Peer-Review & Refinement Loop
+    print("🔬 [Agent 3/3] Critic Agent is executing peer-review and rewriting...")
+    final_res = client.chat.completions.create(
+        model=config["model_name"],
+        messages=[{"role": "user", "content": CRITIC_AGENT.format(draft_content=draft_content)}],
         temperature=0.2,
     )
-    final_survey = polished_response.choices[0].message.content
+    final_output = final_res.choices[0].message.content
 
-    # Save Output
+    # Export output
     os.makedirs(config["output_dir"], exist_ok=True)
-    output_path = f"{config['output_dir']}/final_survey.md"
+    out_file = os.path.join(config["output_dir"], "final_agentic_survey.md")
+    with open(out_file, "w", encoding="utf-8") as f:
+        f.write(final_output)
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(final_survey)
+    print(f"\n🚀 System Complete! Agentic framework has outputted paper to: {out_file}")
 
-    print(f"🎉 Success! Final polished survey saved to: {output_path}")
+def extract_text_from_pdfs(download_dir):
+    """
+    Scans the download directory, extracts text from downloaded PDFs,
+    and structures them into manageable summaries for the context window.
+    """
+    if not os.path.exists(download_dir):
+        return "No local papers found."
 
+    pdf_files = [f for f in os.listdir(download_dir) if f.endswith(".pdf")]
+    if not pdf_files:
+        return "No PDF files available."
+
+    print(f"📖 Deep parsing {len(pdf_files)} PDF manuscripts...")
+    aggregated_context = ""
+
+    for file_name in pdf_files:
+        file_path = os.path.join(download_dir, file_name)
+        try:
+            reader = PdfReader(file_path)
+            # Extract Abstract and Introduction (usually first 2 pages)
+            # and Conclusion (usually last 1-2 pages) to stay efficient
+            num_pages = len(reader.pages)
+
+            extracted_text = f"\n=== START OF MANUSCRIPT: {file_name} ===\n"
+
+            # Parse critical sections to optimize token limits
+            for i in range(min(3, num_pages)):  # Front matter
+                extracted_text += reader.pages[i].extract_text()
+
+            if num_pages > 3:
+                extracted_text += "\n[... Skipping Body Methodology ...]\n"
+                for i in range(
+                    max(num_pages - 2, 3), num_pages
+                ):  # End/Conclusions
+                    extracted_text += reader.pages[i].extract_text()
+
+            extracted_text += f"\n=== END OF MANUSCRIPT: {file_name} ===\n"
+            aggregated_context += extracted_text
+
+        except Exception as e:
+            print(f"⚠️ Warning: Could not parse {file_name}. Error: {e}")
+
+    return aggregated_context
 
 if __name__ == "__main__":
-    run_pipeline()
+    run_agentic_pipeline
