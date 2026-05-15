@@ -17,6 +17,7 @@ An automated, containerized pipeline to search, fetch, synthesize, and polish ac
 
 ## 📂 Repository Structure
 
+```text
 openclaw-survey-generator/
 ├── config.yaml               # Runtime Configuration (API Keys, Keywords)
 ├── config.example.yaml       # Template configuration for users
@@ -32,7 +33,7 @@ openclaw-survey-generator/
     ├── paper_fetcher.py      # Step 1: Arxiv search & downloader engine
     ├── pipeline.py           # Steps 3 & 4: Drafting & Editing Pipeline
     └── prompts.py            # Academic prompt templates
-
+```
 ---
 
 ## 🚀 Quick Start
