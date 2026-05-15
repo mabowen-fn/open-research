@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  survey-generator:
+    build: .
+    container_name: openclaw-survey-pipeline
+    volumes:
+      # Mount config and data so outputs persist on your host machine
+      - ./config.yaml:/app/config.yaml
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
