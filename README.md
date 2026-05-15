@@ -1,6 +1,5 @@
 ### `README.md`
 
-```markdown
 # OpenClaw Survey Generator 🤖📄
 
 An automated, containerized pipeline to search, fetch, synthesize, and polish academic literature review papers using LLMs. Built with reproducibility in mind, this project wraps an end-to-end research workflow into a single command-line execution environment powered by Docker.
@@ -18,7 +17,6 @@ An automated, containerized pipeline to search, fetch, synthesize, and polish ac
 
 ## 📂 Repository Structure
 
-```text
 openclaw-survey-generator/
 ├── config.yaml               # Runtime Configuration (API Keys, Keywords)
 ├── config.example.yaml       # Template configuration for users
@@ -34,8 +32,6 @@ openclaw-survey-generator/
     ├── paper_fetcher.py      # Step 1: Arxiv search & downloader engine
     ├── pipeline.py           # Steps 3 & 4: Drafting & Editing Pipeline
     └── prompts.py            # Academic prompt templates
-
-```
 
 ---
 
