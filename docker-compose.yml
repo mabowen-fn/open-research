@@ -1,12 +1,27 @@
+# docker-compose.yml
 version: '3.8'
 
 services:
-  survey-generator:
+  # The Core Backend Engine
+  pipeline:
     build: .
-    container_name: openclaw-survey-pipeline
+    container_name: openclaw-backend-engine
     volumes:
-      # Mount config and data so outputs persist on your host machine
       - ./config.yaml:/app/config.yaml
       - ./data:/app/data
     environment:
       - PYTHONUNBUFFERED=1
+
+  # The Interactive Dashboard Layer
+  web-ui:
+    build: .
+    container_name: openclaw-streamlit-gui
+    command: ["streamlit", "run", "gui/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - ./data:/app/data
+      - ./gui:/app/gui
+    depends_on:
+      - pipeline

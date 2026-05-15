@@ -1,118 +1,145 @@
-# OpenClaw Survey Generator 🤖📄
+# open-research 🤖📚
 
-An automated, containerized pipeline to search, fetch, synthesize, and polish academic literature review papers using LLMs. Built with reproducibility in mind, this project wraps an end-to-end research workflow into a single command-line execution environment powered by Docker.
+`openresearch` is an autonomous, multi-container research engineering engine designed to automatically fetch, parse, index, synthesize, and compile publication-ready literature review surveys. 
 
----
+By leveraging a serverless FAISS vector space and a cooperative Multi-Agent workflow, `openresearch` transforms dozens of raw academic PDF manuscripts into structured, peer-reviewed, camera-ready PDF and Markdown surveys with fully tracked BibTeX bibliographies.
 
-## 🌟 Features
-
-* 🐳 **100% Dockerized**: Zero-dependency local setup. Run the entire pipeline via isolated containers.
-* 🔍 **Automated Arxiv Fetcher**: Dynamically queries Arxiv API based on your custom keywords and downloads relevant PDFs/meta-data.
-* ✨ **Automated Peer-Review Polishing**: Passively self-corrects structural logic, eliminates colloquial language, and refines scientific prose to meet top-tier journal standards (IEEE/ACM style).
-
-## ⚡ Advanced Multi-Agent Engine Architecture
-
-Unlike basic prompt wrappers, this repository deploys a containerized **Multi-Agent Consensus System** that parses actual binaries:
-
-1. **PDF Extracting Layer**: Uses structural binary parsers (`pypdf`) to systematically extract section matrix windows (Abstracts, Intros, Results) while keeping token limits fully optimized.
-2. **Analyst Agent 🕵️‍♂️**: Converts arbitrary paper text into rigorous semantic indexes tracking individual methodologies, limitations, and missing elements.
-3. **Synthesis Agent ✍️**: Ingests structural data frames to forge integrated taxonomies instead of linear paper-by-paper summaries.
-4. **Critic Agent 🔬**: Mimics international journal peer-review panels, automatically debugging logic discrepancies, syntax structures, and delivering the finalized publication-ready Markdown file.
+Optimized to run out-of-the-box on high-context, ultra-affordable **MiniMax AI (海螺 AI)** infrastructure.
 
 ---
 
-## 📂 Repository Structure
+## ⚡ System Architecture & Agent Topology
+
+Unlike basic single-prompt wrapper scripts, `openresearch` treats literature synthesis as a multi-stage software engineering pipeline:
+
+1. **Ingestion Layer 📄**: Downloads relevant PDF files via the Arxiv API. In tandem, metadata fields are processed by the `CitationEngine` to generate static `.bib` databases.
+2. **Semantic Context Layer (RAG) 🧠**: Parsed PDF text slices are chunked and embedded using an optimized `FAISS` vector index, bypassing token limitation bottlenecks.
+3. **Analyst Agent 🕵️‍♂️**: Queries the vector store to break down every paper's specific methodology, parameters, and limitations into an organized analytical index matrix.
+4. **Writer Agent ✍️**: Ingests the matrix to construct a cohesive thematic breakdown, mapping concepts instead of writing a disjointed list of summaries.
+5. **Critic Agent 🔬**: Reviews the paper against top-tier journal standards (IEEE/ACM style) to remove colloquial phrases, repair logical breaks, and implement complex structural edits.
+6. **Verification Agent 🛡️**: A deterministic gatekeeper that cross-checks citations inside the text against the tracked BibTeX keys to eliminate any potential LLM citation hallucinations.
+7. **Compilation Layer 🖨️**: Pandoc intercepts the finalized Markdown, joins it with the `.bib` reference ledger, and outputs a publication-formatted PDF.
+
+---
+
+## 📂 Project Structure
 
 ```text
 open-research/
-├── config.yaml               # Runtime Configuration (API Keys, Keywords)
-├── config.example.yaml       # Template configuration for users
-├── Dockerfile                # Image recipe for system dependencies
-├── docker-compose.yml        # Orchestration configuration
-├── requirements.txt          # Minimal Python dependencies
-├── main.py                   # Main entry point (local runner)
+├── config.yaml               # Runtime Configurations (MiniMax Base/Model settings)
+├── config.example.yaml       # Template configuration file
+├── Dockerfile                # System dependencies (Python, Pandoc, WeasyPrint)
+├── docker-compose.yml        # Multi-Container orchestration matrix
+├── requirements.txt          # Python packages (FAISS, Streamlit, Openai, pypdf)
+├── main.py                   # Sequential backend script controller
+├── gui/
+│   └── app.py                # Streamlit Web Dashboard Frontend
 ├── data/
-│   ├── raw_papers/           # Automatically downloaded PDFs
-│   └── output/               # Final generated Markdown survey papers
+│   ├── raw_papers/           # Downloaded target PDF manuscripts
+│   └── output/               # Final generated .md, .bib, and compiled .pdf documents
 └── src/
     ├── __init__.py
-    ├── paper_fetcher.py      # Step 1: Arxiv search & downloader engine
-    ├── pipeline.py           # Steps 3 & 4: Drafting & Editing Pipeline
-    └── prompts.py            # Academic prompt templates
+    ├── paper_fetcher.py      # Arxiv retrieval engine
+    ├── vector_store.py       # FAISS indexing & sliding-window RAG loader
+    ├── citation_engine.py    # Deterministic BibTeX compiler & sanitizer
+    ├── pipeline.py           # Core Multi-Agent orchestration logic
+    └── prompts.py            # Academic persona prompts
+
 ```
+
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start with Docker
 
 ### Prerequisites
 
-* [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
-* An API Key from your chosen LLM provider (OpenAI compatible, or OpenClaw Gateway endpoint).
+* [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+* A API Key from the **MiniMax Developer Platform** (Mainland China or Global portal).
 
-### Installation & Run
+### 1. Setup Environment
 
-1. **Clone the repository:**
+Clone the repository and copy the environment template:
+
 ```bash
-git clone https://github.com/mabowen-fn/open-research.git(https://github.com/mabowen-fn/open-research.git)
+git clone [https://github.com/mabowen-fn/open-research.git](https://github.com/mabowen-fn/open-research.git)
 cd open-research
 ```
 
+### 2. Configure MiniMax Settings
 
-2. **Configure your environment:**
+Open `config.yaml` and enter your endpoint specifications:
 
-Open `config.yaml` and edit the parameters:
 ```yaml
-openai_api_key: "your-actual-api-key"
-openai_api_base: "[https://api.openai.com/v1](https://api.openai.com/v1)" # Or your OpenClaw proxy address
-search_query: "Large Language Model Agents"  # Your survey topic
-max_results: 5
+# LLM Provider Configuration
+openai_api_key: "your-minimax-api-key-here"
+openai_api_base: "[https://api.minimaxi.com/v1](https://api.minimaxi.com/v1)" # Use [https://api.minimax.io/v1](https://api.minimax.io/v1) for global accounts
+
+# Choose your MiniMax Engine Tier
+model_name: "MiniMax-M2.5"                     # 196K default context window (highly affordable)
+# model_name: "MiniMax-M2.5-lightning"         # Use for 1M long-context scaling if processing 30+ papers
+
+# Research Query Setup
+search_query: "Reinforcement Learning from AI Feedback"
+max_results: 8
+download_dir: "./data/raw_papers"
+output_dir: "./data/output"
 
 ```
 
+### 3. Launch the System
 
-3. **Execute with Docker Compose:**
+Export your secret key to your shell environment and bring up the multi-container stack:
+
 ```bash
+export MINIMAX_API_KEY="your_secret_key_here"
 docker-compose up --build
 
 ```
 
+---
 
+## 🖥️ Interactive Web UI Dashboard
 
-The container will automatically execute:
+Once the containers are running, `openresearch` opens an interactive GUI on your host machine.
 
-* **Step 1:** Download the top `N` papers matching your query into `data/raw_papers/`.
-* **Step 2:** Read and aggregate the literature into a structured layout.
-* **Step 3:** Synthesize a comprehensive literature review draft.
-* **Step 4:** Polish the grammar, academic language, and structure.
-
-Your completed paper will be saved as a clean Markdown document at: `data/output/final_survey.md`.
+* Open your browser and navigate to **`http://localhost:8501`**
+* Modify search queries, select your MiniMax model engine target, and adjust downloading thresholds inside the sidebar.
+* Watch the live generation feed as the Analyst, Writer, and Critic agents communicate.
+* One-click download your generated `.md` draft, your `.bib` bibliography index, or the compiled academic-formatted `.pdf` file.
 
 ---
 
 ## 🛠️ Running Locally (Without Docker)
 
-If you prefer to run the script directly on your host machine:
+If you have native Python environments configured and prefer direct execution:
 
+1. **Install System Pre-requisites (Required for Document Compilation)**:
+* **Linux**: `sudo apt install pandoc weasyprint`
+* **macOS**: `brew install pandoc` + `pip install weasyprint`
+
+
+2. **Install Python Packages**:
 ```bash
-# 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run the automation suite
+```
+
+
+3. **Run Suite Run**:
+```bash
 python main.py
 
 ```
 
+
+
 ---
 
-## 🗺️ Roadmap & Contributing
+## 🗺️ Future Roadmap & Contributions
 
-This project is currently in its **MVP Stage (V1)**, executing structured single-prompt pipelines linearly over raw text. We plan to heavily leverage autonomous characteristics moving forward.
+`openresearch` is actively maintained to help researchers optimize literature review pipelines. We welcome community PRs for the following targets:
 
-### Future Enhancements:
-
-* [ ] Integrate a robust native PDF parser (`pypdf`/`pdfplumber`) to chunk full-text papers instead of metadata summaries.
-* [ ] Implement **OpenClaw Multi-Agent Orchestration**: Break down the process into specialized Agent roles (e.g., *The Critic*, *The Historian*, *The Proofreader*) arguing over structural soundness.
-* [ ] Add a lightweight Web GUI (Streamlit/Gradio) inside a separate container interface.
-
-We highly welcome community contributions! Please feel free to open an **Issue** or submit a **Pull Request** if you want to help implement the Agent infrastructure.
+* [ ] **Zotero & Mendeley Syncing**: Integration components to query local user library databases alongside Arxiv tracking.
+* [ ] **Agentic Human-in-the-Loop Intersections**: Interface triggers allowing researchers to approve or reject the taxonomy outline *before* the Writer Agent generates the text body.
+* [ ] **Custom LaTeX Style Templates**: Allowing users to upload custom `.sty` files directly via the Streamlit UI to match specific target conference templates (e.g., NeurIPS, CVPR, ACL).
 
