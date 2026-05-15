@@ -26,7 +26,7 @@ Unlike basic prompt wrappers, this repository deploys a containerized **Multi-Ag
 ## 📂 Repository Structure
 
 ```text
-openclaw-survey-generator/
+open-research/
 ├── config.yaml               # Runtime Configuration (API Keys, Keywords)
 ├── config.example.yaml       # Template configuration for users
 ├── Dockerfile                # Image recipe for system dependencies
